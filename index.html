@@ -106,11 +106,17 @@ main{padding:18px 0 30px}
 .wines{display:grid;gap:16px;grid-template-columns:minmax(0,1fr)}
 @media (min-width:900px){.wines{grid-template-columns:repeat(auto-fit,minmax(340px,1fr))}}
 .wine-card{overflow:hidden}
-.label-img.noimg{aspect-ratio:auto;height:130px}
-.label-img{aspect-ratio:4/3;background:var(--surface-2);display:grid;place-items:center;position:relative;overflow:hidden}
-.label-img img{width:100%;height:100%;object-fit:cover}
+.label-img.noimg{height:130px}
+.label-img{height:300px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;padding:12px 0}
+.label-img img{display:block;max-height:100%;max-width:100%;width:auto;height:auto;object-fit:contain;cursor:zoom-in;border-radius:6px;box-shadow:0 2px 10px rgba(0,0,0,.12)}
+.label-img .change{position:absolute;right:10px;bottom:10px;display:flex;gap:6px}
+.crop-stage{position:relative;width:100%;max-height:60vh;margin:0 auto;overflow:hidden;background:#1b1512;border-radius:12px;touch-action:none;cursor:grab;user-select:none}
+.crop-stage:active{cursor:grabbing}
+.crop-stage img{position:absolute;max-width:none;pointer-events:none}
+.crop-stage.round{max-width:340px}
+.crop-stage.round::after{content:"";position:absolute;inset:0;border-radius:50%;box-shadow:0 0 0 999px rgba(0,0,0,.5);pointer-events:none}
+.crop-zoom{flex:1;accent-color:var(--wine)}
 .label-img .ph{display:grid;justify-items:center;gap:6px;color:var(--ink-3);font-size:13px}
-.label-img .change{position:absolute;right:10px;bottom:10px}
 .kicker{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--wine)}
 .pts{display:flex;gap:8px;flex-wrap:wrap}
 .pt{border:1px solid var(--line);border-radius:10px;padding:4px 10px;text-align:center;min-width:64px}
@@ -193,6 +199,7 @@ table.tv td:last-child,table.tv th:last-child{text-align:right}
 const SUPABASE_URL = "https://ayuwyajfjhmxesdqxwkr.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF5dXd5YWpmamhteGVzZHF4d2tyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA1MjUyNzYsImV4cCI6MjEwNjEwMTI3Nn0.zkpw1or422fj58Y06NWz53bNC0KIYhX--fr5qfgP0bA";
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const VERSION = "28-sep · fotos ajustables";
 
 // ---------- Estado ----------
 const S = { personas:[], catas:[], vinos:[], vals:[], fotos:[], sort:"media", fCasa:"", fDO:"", fUva:"", busy:new Set() };
@@ -266,6 +273,91 @@ function pickFile(multiple=false){
     inp.click();
   });
 }
+
+// ---------- Editor para encuadrar fotos (mover y hacer zoom) ----------
+// Devuelve un Blob JPEG recortado, o null si se cancela.
+function cropImage(src, { aspect = 1, round = false, outW = 800, title = "Ajustar foto" } = {}){
+  return new Promise(resolve => {
+    const img = new Image();
+    const isFile = src instanceof Blob;
+    const url = isFile ? URL.createObjectURL(src) : src + (src.includes("?") ? "&" : "?") + "v=" + Date.now();
+    if (!isFile) img.crossOrigin = "anonymous";
+    img.onerror = () => { toast("No se pudo abrir la foto"); resolve(null); };
+    img.onload = () => {
+      const m = document.createElement("div"); m.className = "modal";
+      m.innerHTML = `<div class="sheet">
+        <h2 style="font-size:20px">${title}</h2>
+        <p class="muted small" style="margin:4px 0 12px">Arrastra para mover. Usa la barra o pellizca para acercar o alejar.</p>
+        <div class="crop-stage ${round?"round":""}" style="aspect-ratio:${aspect}"><img alt="" draggable="false"></div>
+        <div class="row" style="margin:14px 0 4px"><span class="muted small">−</span><input type="range" class="crop-zoom" min="0" max="1000" value="0" aria-label="Zoom"><span class="muted small">+</span></div>
+        <div class="row" style="justify-content:space-between;margin-top:14px">
+          <button class="btn ghost sm" data-a="fit">Ver foto entera</button>
+          <div class="row"><button class="btn" data-a="x">Cancelar</button><button class="btn primary" data-a="ok">Guardar</button></div>
+        </div></div>`;
+      document.body.appendChild(m);
+      const stage = m.querySelector(".crop-stage"), im = stage.querySelector("img"), range = m.querySelector(".crop-zoom");
+      im.src = url;
+      const iw = img.naturalWidth, ih = img.naturalHeight;
+      let W, H, zCover, zContain, zMax, z, tx = 0, ty = 0;
+      const measure = () => {
+        W = stage.clientWidth; H = stage.clientHeight;
+        zCover = Math.max(W/iw, H/ih); zContain = Math.min(W/iw, H/ih); zMax = zCover * 4;
+      };
+      const zFromRange = v => zContain * Math.pow(zMax/zContain, v/1000);
+      const rangeFromZ = zz => Math.round(1000 * Math.log(zz/zContain) / Math.log(zMax/zContain));
+      const clamp = () => {
+        const mx = Math.abs(iw*z - W)/2, my = Math.abs(ih*z - H)/2;
+        tx = Math.max(-mx, Math.min(mx, tx)); ty = Math.max(-my, Math.min(my, ty));
+      };
+      const draw = () => {
+        clamp();
+        im.style.width = iw*z + "px"; im.style.height = ih*z + "px";
+        im.style.left = (W/2 - iw*z/2 + tx) + "px"; im.style.top = (H/2 - ih*z/2 + ty) + "px";
+      };
+      const setZ = (nz, cx = 0, cy = 0) => {
+        nz = Math.max(zContain, Math.min(zMax, nz));
+        const k = nz / z; tx = cx + (tx - cx) * k; ty = cy + (ty - cy) * k; z = nz;
+        range.value = rangeFromZ(z); draw();
+      };
+      measure(); z = zCover; range.value = rangeFromZ(z); draw();
+      const onResize = () => { const f = z / zCover; measure(); z = zCover * f; draw(); };
+      window.addEventListener("resize", onResize);
+
+      range.oninput = () => setZ(zFromRange(Number(range.value)));
+      stage.addEventListener("wheel", e => { e.preventDefault(); const r = stage.getBoundingClientRect();
+        setZ(z * (e.deltaY < 0 ? 1.08 : 1/1.08), e.clientX - r.left - W/2, e.clientY - r.top - H/2); }, { passive:false });
+      const pts = new Map(); let last = null;
+      const pinchInfo = () => { const [a,b] = [...pts.values()]; return { d: Math.hypot(a.x-b.x, a.y-b.y), cx:(a.x+b.x)/2, cy:(a.y+b.y)/2 }; };
+      stage.addEventListener("pointerdown", e => { stage.setPointerCapture(e.pointerId); pts.set(e.pointerId, {x:e.clientX, y:e.clientY}); last = pts.size===2 ? pinchInfo() : null; });
+      stage.addEventListener("pointermove", e => {
+        if (!pts.has(e.pointerId)) return;
+        const prev = pts.get(e.pointerId); pts.set(e.pointerId, {x:e.clientX, y:e.clientY});
+        if (pts.size === 1){ tx += e.clientX - prev.x; ty += e.clientY - prev.y; draw(); }
+        else if (pts.size === 2 && last){ const p = pinchInfo(), r = stage.getBoundingClientRect();
+          setZ(z * p.d / last.d, p.cx - r.left - W/2, p.cy - r.top - H/2); last = p; }
+      });
+      const up = e => { pts.delete(e.pointerId); last = pts.size===2 ? pinchInfo() : null; };
+      stage.addEventListener("pointerup", up); stage.addEventListener("pointercancel", up);
+
+      const close = val => { window.removeEventListener("resize", onResize); m.remove(); if (isFile) URL.revokeObjectURL(url); resolve(val); };
+      m.querySelector('[data-a="x"]').onclick = () => close(null);
+      m.querySelector('[data-a="fit"]').onclick = () => { tx = 0; ty = 0; setZ(zContain); };
+      m.querySelector('[data-a="ok"]').onclick = () => {
+        const outH = Math.round(outW / aspect), c = document.createElement("canvas");
+        c.width = outW; c.height = outH;
+        const ctx = c.getContext("2d");
+        ctx.fillStyle = "#f4efe9"; ctx.fillRect(0, 0, outW, outH);
+        const L = W/2 - iw*z/2 + tx, T = H/2 - ih*z/2 + ty, k = outW / W;
+        ctx.drawImage(img, L*k, T*k, iw*z*k, ih*z*k);
+        try { c.toBlob(b => close(b), "image/jpeg", 0.88); }
+        catch(e){ toast("No se pudo procesar la foto"); close(null); }
+      };
+    };
+    img.src = url;
+  });
+}
+const CROP_ETIQUETA = { aspect: 3/4, outW: 900, title: "Encuadra la etiqueta" };
+const CROP_AVATAR = { aspect: 1, round: true, outW: 600, title: "Encuadra tu foto" };
 
 // ---------- IA ----------
 async function fichaIA(vinoId){
@@ -407,7 +499,7 @@ function wineCard(v){
   return `<article class="card wine-card">
     <div class="label-img ${v.foto_etiqueta_url?"":"noimg"}">
       ${v.foto_etiqueta_url?`<img src="${esc(v.foto_etiqueta_url)}" alt="Etiqueta de ${esc(v.nombre)}" onclick="window.open('${esc(v.foto_etiqueta_url)}','_blank')">`:`<div class="ph"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="4"/><path d="M8 6l2-2h4l2 2"/></svg>Sin foto de la etiqueta</div>`}
-      <button class="btn sm change" onclick="fotoEtiqueta(${v.id})">${v.foto_etiqueta_url?"Cambiar foto":"Hacer foto"}</button>
+      <div class="change">${v.foto_etiqueta_url?`<button class="btn sm" onclick="ajustarEtiqueta(${v.id})">Ajustar</button>`:""}<button class="btn sm" onclick="fotoEtiqueta(${v.id})">${v.foto_etiqueta_url?"Cambiar foto":"Hacer foto"}</button></div>
     </div>
     <div class="pad">
       <div class="row between"><span class="kicker">Vino ${v.posicion}</span>${med?`<span class="score" title="Media de ${med.n}">${n1(med.m)}</span>`:""}</div>
@@ -466,8 +558,16 @@ async function setNota(vinoId,n){ if(!needMe())return; const com=$(`#com-${vinoI
 async function clearNota(vinoId){ await upsertVal(vinoId,{puntuacion:null}); render(); }
 async function saveComent(vinoId){ if(!needMe())return; await upsertVal(vinoId,{comentario:$(`#com-${vinoId}`).value.trim()||null}); render(); toast("Comentario guardado"); }
 
+async function ajustarEtiqueta(vinoId){
+  const v = S.vinos.find(x=>x.id===vinoId); if(!v?.foto_etiqueta_url) return;
+  const blob = await cropImage(v.foto_etiqueta_url, CROP_ETIQUETA); if(!blob) return;
+  toast("Guardando…");
+  try{ const url = await upload(blob, "etiquetas"); await sb.from("vinos").update({ foto_etiqueta_url:url }).eq("id",vinoId); await reloadVinos(); render(); toast("Foto ajustada"); }
+  catch(e){ toast("Error al guardar: "+(e.message||e)); }
+}
 async function fotoEtiqueta(vinoId){
-  const [file] = await pickFile(false); if(!file) return;
+  const [file0] = await pickFile(false); if(!file0) return;
+  const file = await cropImage(file0, CROP_ETIQUETA); if(!file) return;
   toast("Subiendo foto…");
   try{
     const url = await upload(file, "etiquetas");
@@ -605,7 +705,7 @@ function initNueva(){
       <label class="f">Nombre (si lo sabes)</label><input type="text" id="nN${i}" placeholder="O déjalo vacío y haz solo la foto">
       <div class="row" style="margin-top:8px"><button class="btn sm" id="nP${i}">📷 Foto de la etiqueta</button><span class="muted small" id="nPs${i}"></span></div>`;
     box.appendChild(d);
-    d.querySelector(`#nP${i}`).onclick = async ()=>{ const [f]=await pickFile(false); if(f){ nuevaFiles[i]=f; $(`#nPs${i}`).textContent="✓ "+f.name.slice(0,24);} };
+    d.querySelector(`#nP${i}`).onclick = async ()=>{ const [f]=await pickFile(false); if(f){ const b = await cropImage(f, CROP_ETIQUETA); if(b){ nuevaFiles[i]=b; $(`#nPs${i}`).textContent="✓ Foto lista"; } } };
   };
   addRow(); addRow();
   $("#nMas").onclick = addRow;
@@ -715,7 +815,7 @@ function viewPerfil(){
   return `<h1 style="font-size:26px;margin-bottom:14px">Perfil</h1>
   <div class="card pad" style="max-width:520px">
     <div class="row">${avatar(me,"lg")}<div class="grow"><b style="font-size:17px">${esc(me?.nombre)}</b><div class="muted small">Usuario: ${esc(me?.usuario||"")}</div></div>
-    <button class="btn sm" onclick="fotoPersona(${meId})">${me?.foto_url?"Cambiar foto":"Poner foto"}</button></div>
+    <div style="display:grid;gap:6px">${me?.foto_url?`<button class="btn sm" onclick="ajustarAvatar()">Ajustar</button>`:""}<button class="btn sm" onclick="fotoPersona(${meId})">${me?.foto_url?"Cambiar foto":"Poner foto"}</button></div></div>
     <div class="hr"></div>
     <h3 style="font-size:16px">Cambiar contraseña</h3>
     <label class="f">Nueva contraseña</label>${pwField("pw1","new-password","Mínimo 6 caracteres")}
@@ -727,7 +827,7 @@ function viewPerfil(){
   ${vinosEnCasa(meId, "Vinos en mi casa")}
   <h3 style="font-size:16px;margin:22px 0 4px">El grupo</h3>
   <p class="muted small" style="margin:0 0 10px">Toca a alguien para ver los vinos de su casa.</p>
-  <div class="people" style="max-width:520px">${S.personas.map(p=>`<div class="person ${p.id===meId?"on":""}" onclick="S.fCasa='${p.id}';S.fDO='';S.fUva='';location.hash='#/vinos'">${avatar(p,"lg")}<b>${esc(p.nombre)}</b><span class="muted small">${pl(vinosBebidos().filter(v=>S.catas.find(c=>c.id===v.cata_id)?.anfitrion_id===p.id).length,"vino","vinos")}</span></div>`).join("")}</div>`;
+  <div class="people" style="max-width:520px">${S.personas.map(p=>`<div class="person ${p.id===meId?"on":""}" onclick="S.fCasa='${p.id}';S.fDO='';S.fUva='';location.hash='#/vinos'">${avatar(p,"lg")}<b>${esc(p.nombre)}</b><span class="muted small">${pl(vinosBebidos().filter(v=>S.catas.find(c=>c.id===v.cata_id)?.anfitrion_id===p.id).length,"vino","vinos")}</span></div>`).join("")}</div><p class="muted small" style="margin:18px 0 0;text-align:center;max-width:520px">Versión ${VERSION}</p>`;
 }
 function vinosEnCasa(pid, titulo){
   const cs = catasOrdenadas().filter(c=>c.anfitrion_id===pid);
@@ -748,9 +848,16 @@ async function cambiarPw(){
   $("#pw1").value=""; $("#pw2").value=""; toast("Contraseña cambiada");
 }
 async function salir(){ await sb.auth.signOut(); }
+async function ajustarAvatar(){
+  const me = persona(meId); if(!me?.foto_url) return;
+  const f = await cropImage(me.foto_url, CROP_AVATAR); if(!f) return;
+  try{ const url=await upload(f,"personas"); const {error}=await sb.from("personas").update({foto_url:url}).eq("id",meId); if(error) throw error; me.foto_url=url; render(); toast("Foto ajustada"); }
+  catch(e){ toast("Error al guardar: "+(e.message||e)); }
+}
 async function fotoPersona(id){
   if (id!==meId) return;
-  const [f]=await pickFile(false); if(!f) return;
+  const [f0]=await pickFile(false); if(!f0) return;
+  const f = await cropImage(f0, CROP_AVATAR); if(!f) return;
   try{ const url=await upload(f,"personas"); const {error}=await sb.from("personas").update({foto_url:url}).eq("id",id); if(error) throw error; persona(id).foto_url=url; render(); }
   catch(e){ toast("Error al subir: "+(e.message||e)); }
 }
