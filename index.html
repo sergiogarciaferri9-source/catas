@@ -1,0 +1,780 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vino entre dos tierras</title>
+<meta name="theme-color" content="#6d1f2f">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><path d='M20 6h24c0 16-4 26-12 26S20 22 20 6z' fill='%236d1f2f'/><rect x='30' y='32' width='4' height='20' fill='%236d1f2f'/><rect x='20' y='52' width='24' height='5' rx='2' fill='%236d1f2f'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<style>
+:root{
+  --bg:#f7f3ee; --surface:#ffffff; --surface-2:#f1ebe4; --line:#e4dad0;
+  --ink:#231a17; --ink-2:#5e514b; --ink-3:#8c7f78;
+  --wine:#6d1f2f; --wine-2:#8f2b40; --wine-soft:#f3e3e6; --gold:#a8792a; --gold-soft:#f5ead6; --next:#1f5c55; --next-soft:#e2efec;
+  --ok:#2f6b3f; --err:#a3312a;
+  --bar:#8f2b40; --bar-track:#efe6df;
+  --pattern:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27420%27%20height%3D%27420%27%20viewBox%3D%270%200%20420%20420%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27%236d1f2f%27%20stroke-width%3D%271.1%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M58%2040h16v34c0%208%2014%2014%2014%2030v150c0%206-4%2010-10%2010H54c-6%200-10-4-10-10V104c0-16%2014-22%2014-30z%27/%3E%3Cpath%20d%3D%27M58%2050h16%27/%3E%3Crect%20x%3D%2750%27%20y%3D%27140%27%20width%3D%2732%27%20height%3D%2760%27%20rx%3D%272%27/%3E%3Crect%20x%3D%2753%27%20y%3D%27143%27%20width%3D%2726%27%20height%3D%2754%27%20rx%3D%271%27/%3E%3Cpath%20d%3D%27M60%20158h12M58%20166h16M61%20184h10%27/%3E%3Cpath%20d%3D%27M66%20148l2%203-2%203-2-3z%27/%3E%3Cpath%20d%3D%27M290%2060c-14%200-22%2012-18%2024M282%2066c10-2%2020%204%2022%2014%27/%3E%3Ccircle%20cx%3D%27300%27%20cy%3D%2796%27%20r%3D%277%27/%3E%3Ccircle%20cx%3D%27315%27%20cy%3D%2796%27%20r%3D%277%27/%3E%3Ccircle%20cx%3D%27285%27%20cy%3D%2796%27%20r%3D%277%27/%3E%3Ccircle%20cx%3D%27308%27%20cy%3D%27109%27%20r%3D%277%27/%3E%3Ccircle%20cx%3D%27293%27%20cy%3D%27109%27%20r%3D%277%27/%3E%3Ccircle%20cx%3D%27300%27%20cy%3D%27122%27%20r%3D%277%27/%3E%3Cpath%20d%3D%27M250%20270c20-30%2060-34%2080-10-6%2010-4%2026%208%2036-26%2020-66%2016-84%200%208-8%208-20-4-26z%27/%3E%3Cpath%20d%3D%27M258%20274c26%204%2048%2016%2066%2030M290%20282l-6%2018M306%20292l8-16%27/%3E%3Cpath%20d%3D%27M130%20300c0%2026%2012%2038%2030%2038s30-12%2030-38z%27/%3E%3Cpath%20d%3D%27M160%20338v34M144%20374h32%27/%3E%3Cpath%20d%3D%27M136%20316h48%27/%3E%3Cpath%20d%3D%27M360%20190c-8-12-24-12-30%200%27/%3E%3Cpath%20d%3D%27M190%2060c10%206%2020%206%2030%200M200%2070c4%202%208%202%2012%200%27/%3E%3C/g%3E%3C/svg%3E"); --pattern-op:.055; --radius:14px; --shadow:0 1px 2px rgba(40,20,20,.06),0 4px 16px rgba(40,20,20,.05);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#16110f; --surface:#211a17; --surface-2:#2b221e; --line:#3a2f2a;
+    --ink:#f3ebe6; --ink-2:#c6b8b0; --ink-3:#8f817a;
+    --wine:#e28a9c; --wine-2:#d77489; --wine-soft:#3a2026; --gold:#d9ad5f; --gold-soft:#3a2f1d; --next:#6cc0b3; --next-soft:#1a302d;
+    --ok:#7fc190; --err:#f08a80;
+    --bar:#d77489; --bar-track:#33282a; --shadow:none; --pattern:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27420%27%20height%3D%27420%27%20viewBox%3D%270%200%20420%20420%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27%23e8c9a8%27%20stroke-width%3D%271.1%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M58%2040h16v34c0%208%2014%2014%2014%2030v150c0%206-4%2010-10%2010H54c-6%200-10-4-10-10V104c0-16%2014-22%2014-30z%27/%3E%3Cpath%20d%3D%27M58%2050h16%27/%3E%3Crect%20x%3D%2750%27%20y%3D%27140%27%20width%3D%2732%27%20height%3D%2760%27%20rx%3D%272%27/%3E%3Crect%20x%3D%2753%27%20y%3D%27143%27%20width%3D%2726%27%20height%3D%2754%27%20rx%3D%271%27/%3E%3Cpath%20d%3D%27M60%20158h12M58%20166h16M61%20184h10%27/%3E%3Cpath%20d%3D%27M66%20148l2%203-2%203-2-3z%27/%3E%3Cpath%20d%3D%27M290%2060c-14%200-22%2012-18%2024M282%2066c10-2%2020%204%2022%2014%27/%3E%3Ccircle%20cx%3D%27300%27%20cy%3D%2796%27%20r%3D%277%27/%3E%3Ccircle%20cx%3D%27315%27%20cy%3D%2796%27%20r%3D%277%27/%3E%3Ccircle%20cx%3D%27285%27%20cy%3D%2796%27%20r%3D%277%27/%3E%3Ccircle%20cx%3D%27308%27%20cy%3D%27109%27%20r%3D%277%27/%3E%3Ccircle%20cx%3D%27293%27%20cy%3D%27109%27%20r%3D%277%27/%3E%3Ccircle%20cx%3D%27300%27%20cy%3D%27122%27%20r%3D%277%27/%3E%3Cpath%20d%3D%27M250%20270c20-30%2060-34%2080-10-6%2010-4%2026%208%2036-26%2020-66%2016-84%200%208-8%208-20-4-26z%27/%3E%3Cpath%20d%3D%27M258%20274c26%204%2048%2016%2066%2030M290%20282l-6%2018M306%20292l8-16%27/%3E%3Cpath%20d%3D%27M130%20300c0%2026%2012%2038%2030%2038s30-12%2030-38z%27/%3E%3Cpath%20d%3D%27M160%20338v34M144%20374h32%27/%3E%3Cpath%20d%3D%27M136%20316h48%27/%3E%3Cpath%20d%3D%27M360%20190c-8-12-24-12-30%200%27/%3E%3Cpath%20d%3D%27M190%2060c10%206%2020%206%2030%200M200%2070c4%202%208%202%2012%200%27/%3E%3C/g%3E%3C/svg%3E"); --pattern-op:.04;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#16110f; --surface:#211a17; --surface-2:#2b221e; --line:#3a2f2a;
+  --ink:#f3ebe6; --ink-2:#c6b8b0; --ink-3:#8f817a;
+  --wine:#e28a9c; --wine-2:#d77489; --wine-soft:#3a2026; --gold:#d9ad5f; --gold-soft:#3a2f1d; --next:#6cc0b3; --next-soft:#1a302d;
+  --ok:#7fc190; --err:#f08a80; --bar:#d77489; --bar-track:#33282a; --shadow:none; --pattern:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27420%27%20height%3D%27420%27%20viewBox%3D%270%200%20420%20420%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27%23e8c9a8%27%20stroke-width%3D%271.1%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M58%2040h16v34c0%208%2014%2014%2014%2030v150c0%206-4%2010-10%2010H54c-6%200-10-4-10-10V104c0-16%2014-22%2014-30z%27/%3E%3Cpath%20d%3D%27M58%2050h16%27/%3E%3Crect%20x%3D%2750%27%20y%3D%27140%27%20width%3D%2732%27%20height%3D%2760%27%20rx%3D%272%27/%3E%3Crect%20x%3D%2753%27%20y%3D%27143%27%20width%3D%2726%27%20height%3D%2754%27%20rx%3D%271%27/%3E%3Cpath%20d%3D%27M60%20158h12M58%20166h16M61%20184h10%27/%3E%3Cpath%20d%3D%27M66%20148l2%203-2%203-2-3z%27/%3E%3Cpath%20d%3D%27M290%2060c-14%200-22%2012-18%2024M282%2066c10-2%2020%204%2022%2014%27/%3E%3Ccircle%20cx%3D%27300%27%20cy%3D%2796%27%20r%3D%277%27/%3E%3Ccircle%20cx%3D%27315%27%20cy%3D%2796%27%20r%3D%277%27/%3E%3Ccircle%20cx%3D%27285%27%20cy%3D%2796%27%20r%3D%277%27/%3E%3Ccircle%20cx%3D%27308%27%20cy%3D%27109%27%20r%3D%277%27/%3E%3Ccircle%20cx%3D%27293%27%20cy%3D%27109%27%20r%3D%277%27/%3E%3Ccircle%20cx%3D%27300%27%20cy%3D%27122%27%20r%3D%277%27/%3E%3Cpath%20d%3D%27M250%20270c20-30%2060-34%2080-10-6%2010-4%2026%208%2036-26%2020-66%2016-84%200%208-8%208-20-4-26z%27/%3E%3Cpath%20d%3D%27M258%20274c26%204%2048%2016%2066%2030M290%20282l-6%2018M306%20292l8-16%27/%3E%3Cpath%20d%3D%27M130%20300c0%2026%2012%2038%2030%2038s30-12%2030-38z%27/%3E%3Cpath%20d%3D%27M160%20338v34M144%20374h32%27/%3E%3Cpath%20d%3D%27M136%20316h48%27/%3E%3Cpath%20d%3D%27M360%20190c-8-12-24-12-30%200%27/%3E%3Cpath%20d%3D%27M190%2060c10%206%2020%206%2030%200M200%2070c4%202%208%202%2012%200%27/%3E%3C/g%3E%3C/svg%3E"); --pattern-op:.04;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body::before{content:'';position:fixed;inset:0;z-index:-1;background-image:var(--pattern);background-size:420px 420px;opacity:var(--pattern-op);pointer-events:none}
+body{position:relative;isolation:isolate}
+body{background:radial-gradient(1200px 700px at 50% -10%, color-mix(in srgb,var(--gold-soft) 55%,transparent), transparent 70%), var(--bg);background-attachment:fixed;color:var(--ink);font:15px/1.5 Inter,system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased;padding-bottom:calc(72px + env(safe-area-inset-bottom))}
+h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:650;line-height:1.2;margin:0}
+a{color:var(--wine)}
+button,input,select,textarea{font:inherit;color:inherit}
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px}
+header.top{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+header.top .wrap{display:flex;align-items:center;gap:12px;height:58px}
+.brand{font-family:Fraunces,serif;font-weight:650;font-size:19px;color:var(--wine);text-decoration:none;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.me{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:4px 10px 4px 4px;cursor:pointer}
+.me span{font-size:13px;font-weight:600}
+.av{width:30px;height:30px;border-radius:50%;background:var(--wine-soft);color:var(--wine);display:inline-grid;place-items:center;font-weight:600;font-size:13px;overflow:hidden;flex:none}
+.av img{width:100%;height:100%;object-fit:cover}
+.av.lg{width:56px;height:56px;font-size:20px}
+nav.bottom{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--surface);border-top:1px solid var(--line);display:flex;padding-bottom:env(safe-area-inset-bottom)}
+nav.bottom a{flex:1;text-align:center;padding:9px 0 10px;text-decoration:none;color:var(--ink-3);font-size:12px;font-weight:500}
+nav.bottom a svg{display:block;margin:0 auto 2px;width:22px;height:22px}
+nav.bottom a.on{color:var(--wine)}
+main{padding:18px 0 30px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.pad{padding:16px}
+.muted{color:var(--ink-3)} .ink2{color:var(--ink-2)}
+.small{font-size:13px}
+.row{display:flex;align-items:center;gap:10px}
+.between{justify-content:space-between}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:9px 14px;font-weight:600;font-size:14px;cursor:pointer;text-decoration:none;color:var(--ink)}
+.btn.primary{background:var(--wine);border-color:var(--wine);color:#fff}
+:root[data-theme="dark"] .btn.primary{color:#1b0f12}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .btn.primary{color:#1b0f12}}
+.btn.ghost{background:transparent;border-color:transparent;color:var(--wine);padding:6px 8px}
+.btn.sm{padding:6px 10px;font-size:13px}
+.btn:disabled{opacity:.55;cursor:default}
+.seg{display:inline-flex;background:var(--surface-2);border-radius:10px;padding:3px}
+.seg button{border:0;background:transparent;padding:6px 12px;border-radius:8px;font-size:13px;font-weight:600;color:var(--ink-2);cursor:pointer}
+.seg button.on{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
+.chip{display:inline-flex;align-items:center;gap:4px;padding:2px 9px;border-radius:999px;background:var(--surface-2);font-size:12px;color:var(--ink-2);white-space:nowrap}
+.chip.wine{background:var(--wine-soft);color:var(--wine)}
+.chip.gold{background:var(--gold-soft);color:var(--gold)}
+.card.next{border:1.5px solid var(--next);background:linear-gradient(135deg,var(--next-soft),var(--surface) 70%)}
+.card.next .date-box{background:var(--next);color:#fff}.card.next .date-box span{color:rgba(255,255,255,.85)}
+.chip.next-chip{background:var(--next);color:#fff}
+:root[data-theme="dark"] .chip.next-chip,:root[data-theme="dark"] .card.next .date-box{color:#0f1f1d}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .chip.next-chip,:root:not([data-theme="light"]) .card.next .date-box{color:#0f1f1d}}
+.next-banner{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:12px;background:var(--next-soft);color:var(--next);font-weight:600;margin-bottom:14px;border:1px solid color-mix(in srgb,var(--next) 35%,transparent)}
+.score{display:inline-grid;place-items:center;min-width:44px;height:30px;padding:0 8px;border-radius:9px;font-weight:650;font-family:Fraunces,serif;font-size:16px;background:var(--wine-soft);color:var(--wine)}
+.score.none{background:var(--surface-2);color:var(--ink-3);font-family:Inter;font-size:13px;font-weight:500}
+.split{display:grid;gap:18px;grid-template-columns:minmax(0,1fr)}
+@media (min-width:900px){.split{grid-template-columns:minmax(0,5fr) minmax(0,6fr)}.mobile-only{display:none!important}}
+@media (max-width:899px){.split>.hide-m{display:none}}
+.sec-h{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 12px}
+.sec-h h2{font-size:20px}
+.filters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0 0 12px}
+.filters select{font-size:13px;padding:8px 9px}
+@media (max-width:520px){.filters{grid-template-columns:1fr 1fr}.filters select:first-child{grid-column:1/-1}}
+.list{list-style:none;margin:0;padding:0}
+.list li+li{border-top:1px solid var(--line)}
+.item{display:flex;gap:12px;align-items:center;padding:12px 16px;text-decoration:none;color:inherit}
+.item:hover{background:var(--surface-2)}
+.date-box{flex:none;width:48px;text-align:center;border-radius:10px;background:var(--surface-2);padding:5px 0}
+.date-box b{display:block;font-family:Fraunces,serif;font-size:19px;line-height:1.1}
+.date-box span{font-size:11px;text-transform:uppercase;color:var(--ink-3);letter-spacing:.04em}
+.grow{flex:1;min-width:0}
+.t1{font-weight:600;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;line-height:1.3}
+@media (max-width:520px){.chip.gold .lbl{display:none}}
+.t2{font-size:13px;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.year-h{padding:10px 16px 6px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);background:var(--surface-2)}
+.wines{display:grid;gap:16px;grid-template-columns:minmax(0,1fr)}
+@media (min-width:900px){.wines{grid-template-columns:repeat(auto-fit,minmax(340px,1fr))}}
+.wine-card{overflow:hidden}
+.label-img.noimg{aspect-ratio:auto;height:130px}
+.label-img{aspect-ratio:4/3;background:var(--surface-2);display:grid;place-items:center;position:relative;overflow:hidden}
+.label-img img{width:100%;height:100%;object-fit:cover}
+.label-img .ph{display:grid;justify-items:center;gap:6px;color:var(--ink-3);font-size:13px}
+.label-img .change{position:absolute;right:10px;bottom:10px}
+.kicker{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--wine)}
+.pts{display:flex;gap:8px;flex-wrap:wrap}
+.pt{border:1px solid var(--line);border-radius:10px;padding:4px 10px;text-align:center;min-width:64px}
+.pt b{display:block;font-family:Fraunces,serif;font-size:19px;line-height:1.2}
+.pt span{font-size:11px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.05em}
+.pt.empty b{color:var(--ink-3);font-family:Inter;font-size:14px;font-weight:500;padding:3px 0}
+details summary{cursor:pointer;color:var(--wine);font-weight:600;font-size:14px;list-style:none}
+details summary::-webkit-details-marker{display:none}
+.rate-row{display:flex;gap:10px;padding:10px 0;align-items:flex-start}
+.rate-row+.rate-row{border-top:1px solid var(--line)}
+.stars{display:flex;gap:4px;flex-wrap:wrap}
+.stars button{width:34px;height:34px;border-radius:9px;border:1px solid var(--line);background:var(--surface);font-weight:600;cursor:pointer;font-size:14px}
+.stars button.on{background:var(--wine);border-color:var(--wine);color:#fff}
+textarea,input[type=text],input[type=password],input[type=date],input[type=number],select{width:100%;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:9px 11px}
+textarea{min-height:70px;resize:vertical}
+.pw-wrap{position:relative}.pw-wrap input{padding-right:44px}
+.pw-eye{position:absolute;right:4px;top:50%;transform:translateY(-50%);border:0;background:transparent;color:var(--ink-3);width:38px;height:36px;display:grid;place-items:center;cursor:pointer;border-radius:8px}
+.pw-eye:hover{color:var(--ink)}
+label.f{display:block;font-size:13px;font-weight:600;color:var(--ink-2);margin:12px 0 5px}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:8px}
+.gallery button{padding:0;border:0;border-radius:10px;overflow:hidden;aspect-ratio:1;cursor:pointer;background:var(--surface-2)}
+.gallery img{width:100%;height:100%;object-fit:cover;display:block}
+.status{display:flex;gap:8px;align-items:center;font-size:13px;padding:8px 12px;border-radius:10px;background:var(--gold-soft);color:var(--gold)}
+.status.err{background:color-mix(in srgb,var(--err) 12%,transparent);color:var(--err)}
+.spin{width:16px;height:16px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:sp .8s linear infinite;flex:none}
+@keyframes sp{to{transform:rotate(360deg)}}
+.stats-grid{display:grid;gap:16px}
+@media (min-width:900px){.stats-grid{grid-template-columns:1fr 1fr}}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.kpi b{display:block;font-family:Fraunces,serif;font-size:28px;line-height:1.1}
+.kpi span{font-size:12px;color:var(--ink-3)}
+.bars{display:grid;gap:9px}
+.bar-row{display:grid;grid-template-columns:minmax(0,11.5em) 1fr auto;gap:10px;align-items:center;font-size:13px}
+.bar-row .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink-2)}
+.bar-track{height:14px;border-radius:4px;background:var(--bar-track);position:relative}
+.bar-fill{height:100%;border-radius:0 4px 4px 0;background:var(--bar);min-width:3px}
+.bar-row .val{font-variant-numeric:tabular-nums;font-weight:600;min-width:2.8em;text-align:right}
+.bar-row:hover .nm{color:var(--ink)}
+.bar-row:hover .bar-fill{filter:brightness(1.12)}
+.empty{padding:22px 16px;text-align:center;color:var(--ink-3);font-size:14px}
+.modal{position:fixed;inset:0;z-index:50;background:rgba(15,8,8,.55);display:grid;place-items:end center}
+@media (min-width:700px){.modal{place-items:center}}
+.sheet{background:var(--surface);width:100%;max-width:560px;max-height:92vh;overflow:auto;border-radius:18px 18px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom))}
+@media (min-width:700px){.sheet{border-radius:18px}}
+.lightbox{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.92);display:grid;place-items:center}
+.lightbox img{max-width:100vw;max-height:88vh;object-fit:contain}
+.lightbox .bar{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;padding:12px}
+.lightbox .btn{background:rgba(255,255,255,.12);color:#fff;border-color:transparent}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom));z-index:70;background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-size:14px;box-shadow:var(--shadow);max-width:calc(100% - 32px)}
+.people{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.person{display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 8px;border:1px solid var(--line);border-radius:12px;background:var(--surface);cursor:pointer}
+.person.on{border-color:var(--wine);box-shadow:0 0 0 2px var(--wine-soft)}
+.wine-new{border:1px dashed var(--line);border-radius:12px;padding:12px;margin-top:10px}
+.hr{height:1px;background:var(--line);margin:14px 0}
+.flex-wrap{display:flex;flex-wrap:wrap;gap:6px}
+.back{display:inline-flex;align-items:center;gap:4px;text-decoration:none;color:var(--ink-3);font-size:14px;margin-bottom:10px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+table.tv{width:100%;border-collapse:collapse;font-size:13px}
+table.tv td,table.tv th{padding:5px 4px;border-bottom:1px solid var(--line);text-align:left}
+table.tv td:last-child,table.tv th:last-child{text-align:right}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="#/">Vino entre dos tierras</a>
+  <button class="me" id="meBtn" aria-label="Cambiar de persona"></button>
+</div></header>
+<main><div class="wrap" id="app"><div class="empty">Cargando…</div></div></main>
+<nav class="bottom" id="nav">
+  <a href="#/" data-r="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 3h8c0 6-1.5 9-4 9s-4-3-4-9zM12 12v7M8 21h8"/></svg>Catas</a>
+  <a href="#/vinos" data-r="vinos" class="mobile-only"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 12h10M4 18h6"/></svg>Ranking</a>
+  <a href="#/nueva" data-r="nueva"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>Nueva</a>
+  <a href="#/stats" data-r="stats"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 20V10M12 20V4M19 20v-7"/></svg>Estadísticas</a>
+  <a href="#/perfil" data-r="perfil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>Perfil</a>
+</nav>
+<input type="file" id="filePick" accept="image/*" class="sr">
+
+<script>
+// ---------- Configuración ----------
+const SUPABASE_URL = "https://ayuwyajfjhmxesdqxwkr.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF5dXd5YWpmamhteGVzZHF4d2tyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA1MjUyNzYsImV4cCI6MjEwNjEwMTI3Nn0.zkpw1or422fj58Y06NWz53bNC0KIYhX--fr5qfgP0bA";
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// ---------- Estado ----------
+const S = { personas:[], catas:[], vinos:[], vals:[], fotos:[], sort:"media", fCasa:"", fDO:"", fUva:"", busy:new Set() };
+const store = {
+  get(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } },
+  set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+};
+let meId = null, session = null;
+const DOMINIO = "@vinoentredostierras.app";
+
+// ---------- Utilidades ----------
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const parseD = d => { const [y,m,dd] = d.split("-").map(Number); return new Date(y, m-1, dd); };
+const fmtLong = d => parseD(d).toLocaleDateString("es-ES",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+const cap = t => t.charAt(0).toUpperCase()+t.slice(1);
+const fmtShort = d => parseD(d).toLocaleDateString("es-ES",{day:"numeric",month:"short",year:"numeric"});
+const MES = ["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
+const persona = id => S.personas.find(p => p.id === id);
+const initials = n => (n||"?").split(/\s+/).map(w=>w[0]).slice(0,2).join("").toUpperCase();
+const avatar = (p, cls="") => `<span class="av ${cls}">${p?.foto_url ? `<img src="${esc(p.foto_url)}" alt="">` : esc(initials(p?.nombre))}</span>`;
+const eur = x => Number(x).toLocaleString("es-ES",{style:"currency",currency:"EUR",maximumFractionDigits:2});
+const pl = (n, uno, varios) => `${n} ${n===1?uno:varios}`;
+const n1 = x => (Math.round(x*10)/10).toLocaleString("es-ES",{minimumFractionDigits:1,maximumFractionDigits:1});
+function toast(msg){ const t=document.createElement("div"); t.className="toast"; t.textContent=msg; document.body.appendChild(t); setTimeout(()=>t.remove(),2600); }
+function wineName(v){ return `${v.nombre}${v.anada ? " " + v.anada : ""}`; }
+function mediaVino(id){ const r = S.vals.filter(x=>x.vino_id===id && x.puntuacion!=null); return r.length ? {m:r.reduce((a,b)=>a+Number(b.puntuacion),0)/r.length, n:r.length} : null; }
+const hoyISO = () => { const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; };
+const esProxima = c => c && c.fecha > hoyISO();
+const diasHasta = f => Math.round((parseD(f) - parseD(hoyISO()))/86400000);
+function catasOrdenadas(){ return S.catas.filter(c=>!esProxima(c)).sort((a,b)=>b.fecha.localeCompare(a.fecha)); }
+function catasProximas(){ return S.catas.filter(esProxima).sort((a,b)=>a.fecha.localeCompare(b.fecha)); }
+const vinosBebidos = () => S.vinos.filter(v=>!esProxima(S.catas.find(c=>c.id===v.cata_id)));
+function vinosDeCata(id){ return S.vinos.filter(v=>v.cata_id===id).sort((a,b)=>a.posicion-b.posicion); }
+
+async function loadAll(){
+  const [p,c,v,r,f] = await Promise.all([
+    sb.from("personas").select("*").order("orden"),
+    sb.from("catas").select("*"),
+    sb.from("vinos").select("*"),
+    sb.from("valoraciones").select("*"),
+    sb.from("fotos_cata").select("*").order("created_at"),
+  ]);
+  const err = [p,c,v,r,f].find(x=>x.error);
+  if (err) throw err.error;
+  S.personas=p.data; S.catas=c.data; S.vinos=v.data; S.vals=r.data; S.fotos=f.data;
+}
+async function reloadVinos(){ const {data} = await sb.from("vinos").select("*"); if(data) S.vinos=data; }
+
+// Redimensiona fotos antes de subirlas (más rápido desde el móvil)
+async function resizeImage(file, max=1600){
+  try{
+    const bmp = await createImageBitmap(file);
+    const k = Math.min(1, max/Math.max(bmp.width,bmp.height));
+    const c = document.createElement("canvas"); c.width=Math.round(bmp.width*k); c.height=Math.round(bmp.height*k);
+    c.getContext("2d").drawImage(bmp,0,0,c.width,c.height);
+    return await new Promise(res=>c.toBlob(b=>res(b||file),"image/jpeg",0.85));
+  }catch(e){ return file; }
+}
+async function upload(file, folder){
+  const blob = await resizeImage(file);
+  const path = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2,8)}.jpg`;
+  const { error } = await sb.storage.from("fotos").upload(path, blob, { contentType:"image/jpeg", upsert:false });
+  if (error) throw error;
+  return sb.storage.from("fotos").getPublicUrl(path).data.publicUrl;
+}
+function pickFile(multiple=false){
+  return new Promise(res=>{
+    const inp = $("#filePick"); inp.multiple = multiple; inp.value="";
+    inp.onchange = () => res([...inp.files]);
+    inp.click();
+  });
+}
+
+// ---------- IA ----------
+async function fichaIA(vinoId){
+  if (S.busy.has(vinoId)) return;
+  S.busy.add(vinoId);
+  const v = S.vinos.find(x=>x.id===vinoId); if (v) v.estado_ficha="procesando";
+  render();
+  try{
+    const { data, error } = await sb.functions.invoke("ficha-vino", { body:{ vino_id:vinoId } });
+    if (error) throw error;
+    if (!data?.ok) toast(data?.error || "No se pudo completar la ficha");
+    else toast("Ficha actualizada");
+  }catch(e){ toast("Error al buscar la ficha: " + (e.message||e)); }
+  S.busy.delete(vinoId);
+  await reloadVinos(); render();
+}
+
+// ---------- Router ----------
+function route(){ const h = location.hash.replace(/^#\/?/,""); const [r,id] = h.split("/"); return { r: r||"home", id: id?Number(id):null }; }
+window.addEventListener("hashchange", ()=>{ render(); window.scrollTo(0,0); });
+
+function render(){
+  const { r, id } = route();
+  const logged = !!session;
+  $("#nav").style.display = logged ? "" : "none";
+  $("#meBtn").style.display = logged ? "" : "none";
+  if (!logged){ $("#app").innerHTML = viewLogin(); initLogin(); return; }
+  document.querySelectorAll("#nav a").forEach(a=>a.classList.toggle("on", a.dataset.r===r || (r==="cata" && a.dataset.r==="home")));
+  const me = persona(meId);
+  $("#meBtn").innerHTML = me ? `${avatar(me)}<span>${esc(me.nombre.split(" ")[0])}</span>` : `<span class="av">?</span><span>Perfil</span>`;
+  const app = $("#app");
+  if (r==="cata" && id) app.innerHTML = viewCata(id);
+  else if (r==="nueva") app.innerHTML = viewNueva();
+  else if (r==="stats") app.innerHTML = viewStats();
+  else if (r==="perfil") app.innerHTML = viewPerfil();
+  else if (r==="vinos") app.innerHTML = `<div class="split"><section class="hide-m"></section><section>${panelRanking()}</section></div>`;
+  else app.innerHTML = `<div class="split"><section>${panelCatas()}</section><section class="hide-m">${panelRanking()}</section></div>`;
+  if (r==="nueva") initNueva();
+}
+$("#meBtn").onclick = ()=> location.hash = "#/perfil";
+
+// ---------- Vistas: inicio ----------
+function panelCatas(){
+  const cs = catasOrdenadas();
+  const px = catasProximas();
+  let html = "";
+  if (px.length){
+    html += `<div class="sec-h"><h2>Próxima cata</h2></div>`;
+    for (const c of px){
+      const d = parseD(c.fecha), vs = vinosDeCata(c.id), h = persona(c.anfitrion_id), n = diasHasta(c.fecha);
+      html += `<a class="card next item" href="#/cata/${c.id}" style="margin-bottom:12px">
+        <div class="date-box"><b>${d.getDate()}</b><span>${MES[d.getMonth()]}</span></div>
+        <div class="grow"><div class="t1">${cap(fmtLong(c.fecha))}</div>
+        <div class="t2">En casa de ${esc(h?.nombre)} · ${vs.length?vs.map(v=>esc(v.nombre)).join(" · "):"vinos por decidir"}</div>
+        <span class="chip next-chip" style="margin-top:6px">${n===1?"Mañana":`Faltan ${n} días`}</span></div>${avatar(h)}</a>`;
+    }
+  }
+  html += `<div class="sec-h"><h2>Quedadas</h2><span class="muted small">${cs.length} catas</span></div><div class="card"><ul class="list">`;
+  let year = null;
+  for (const c of cs){
+    const y = c.fecha.slice(0,4);
+    if (y!==year){ year=y; html += `<li class="year-h">${y}</li>`; }
+    const d = parseD(c.fecha), vs = vinosDeCata(c.id), h = persona(c.anfitrion_id);
+    html += `<li><a class="item" href="#/cata/${c.id}">
+      <div class="date-box"><b>${d.getDate()}</b><span>${MES[d.getMonth()]}</span></div>
+      <div class="grow"><div class="t1">${vs.map(v=>esc(v.nombre)).join(" · ") || "Vinos por decidir"}</div>
+      <div class="t2">En casa de ${esc(h?.nombre)} · ${vs.length} vino${vs.length===1?"":"s"}</div></div>
+      ${c.especial?'<span class="chip gold" title="Cata especial">★<span class="lbl"> Especial</span></span>':''}
+      ${avatar(h)}
+    </a></li>`;
+  }
+  return html + `</ul></div>`;
+}
+function panelRanking(){
+  const todos = vinosBebidos();
+  const casaDe = v => S.catas.find(c=>c.id===v.cata_id)?.anfitrion_id;
+  const uniq = arr => [...new Set(arr.filter(Boolean))].sort((a,b)=>a.localeCompare(b,"es"));
+  const dos = uniq(todos.map(v=>v.denominacion)), uvasL = uniq(todos.map(v=>v.uva_principal));
+  let vs = todos.filter(v=>(!S.fCasa || casaDe(v)===Number(S.fCasa)) && (!S.fDO || v.denominacion===S.fDO) && (!S.fUva || v.uva_principal===S.fUva))
+    .map(v=>({...v, med: mediaVino(v.id)}));
+  const hayFiltro = S.fCasa||S.fDO||S.fUva;
+  if (S.sort==="az") vs.sort((a,b)=>a.nombre.localeCompare(b.nombre,"es"));
+  else vs.sort((a,b)=> (b.med?.m??-1)-(a.med?.m??-1) || (b.parker??0)-(a.parker??0) || a.nombre.localeCompare(b.nombre,"es"));
+  const rated = vs.filter(v=>v.med).length;
+  let html = `<div class="sec-h"><h2>Vinos</h2><div class="seg">
+    <button class="${S.sort==="media"?"on":""}" onclick="S.sort='media';render()">Valoración</button>
+    <button class="${S.sort==="az"?"on":""}" onclick="S.sort='az';render()">A–Z</button></div></div>`;
+  const opt = (val, sel, label) => `<option value="${esc(val)}" ${String(val)===String(sel)?"selected":""}>${esc(label)}</option>`;
+  html += `<div class="filters">
+    <select aria-label="Filtrar por casa" onchange="S.fCasa=this.value;render()">${opt("",S.fCasa,"Todas las casas")}${S.personas.map(p=>opt(p.id,S.fCasa,"Casa de "+p.nombre)).join("")}</select>
+    <select aria-label="Filtrar por denominación" onchange="S.fDO=this.value;render()">${opt("",S.fDO,"Todas las DO")}${dos.map(d=>opt(d,S.fDO,d)).join("")}</select>
+    <select aria-label="Filtrar por uva" onchange="S.fUva=this.value;render()">${opt("",S.fUva,"Todas las uvas")}${uvasL.map(u=>opt(u,S.fUva,u)).join("")}</select>
+  </div>
+  ${hayFiltro?`<div class="row between small" style="margin:-2px 0 10px"><span class="muted">${vs.length} de ${todos.length} vinos</span><button class="btn ghost sm" onclick="S.fCasa='';S.fDO='';S.fUva='';render()">Quitar filtros</button></div>`:""}`;
+  if (!rated && S.sort==="media" && vs.length) html += `<p class="muted small" style="margin:-4px 0 10px">Aún no hay valoraciones: de momento se ordenan por puntos Parker.</p>`;
+  if (!vs.length) return html + `<div class="card empty">Ningún vino con estos filtros.</div>`;
+  html += `<div class="card"><ul class="list">`;
+  vs.forEach((v,i)=>{
+    const c = S.catas.find(x=>x.id===v.cata_id);
+    html += `<li><a class="item" href="#/cata/${v.cata_id}">
+      <span class="muted small" style="width:1.6em;text-align:right">${S.sort==="media"&&v.med?i+1:""}</span>
+      <div class="grow"><div class="t1">${esc(wineName(v))}</div>
+      <div class="t2">${c?`Casa de ${esc(persona(c.anfitrion_id)?.nombre)} · ${fmtShort(c.fecha)}`:""}</div>
+      <div class="t2">${esc(v.denominacion||"Sin DO")}${v.parker?` · ${v.parker} Parker`:""}${v.penin?` · ${v.penin} Peñín`:""}${v.precio_compra?` · ${eur(v.precio_compra)}`:""}</div></div>
+      ${v.med?`<span class="score" title="${v.med.n} valoraciones">${n1(v.med.m)}</span>`:`<span class="score none">—</span>`}
+    </a></li>`;
+  });
+  return html + `</ul></div>`;
+}
+
+// ---------- Vista: cata ----------
+function viewCata(id){
+  const c = S.catas.find(x=>x.id===id);
+  if (!c) return `<div class="empty">Esta cata no existe. <a href="#/">Volver</a></div>`;
+  const h = persona(c.anfitrion_id), vs = vinosDeCata(id), fotos = S.fotos.filter(f=>f.cata_id===id);
+  return `<a class="back" href="#/">‹ Catas</a>
+  <div class="row between" style="align-items:flex-start;margin-bottom:16px">
+    <div>${esProxima(c)?`<div class="next-banner">⏳ Próxima cata · ${diasHasta(c.fecha)===1?"mañana":`faltan ${diasHasta(c.fecha)} días`}</div>`:""}<div class="kicker">${c.especial?"★ Cata especial · ":""}En casa de ${esc(h?.nombre)}</div>
+    <h1 style="font-size:26px;margin-top:4px">${cap(fmtLong(c.fecha))}</h1>
+    ${c.notas?`<p class="ink2" style="margin:6px 0 0">${esc(c.notas)}</p>`:""}</div>
+    <button class="btn sm" onclick="editCata(${id})">Editar</button>
+  </div>
+  <div class="wines">${vs.map(v=>wineCard(v)).join("")}</div>
+  <div style="margin:14px 0 26px"><button class="btn" onclick="addVino(${id})">+ Añadir ${vs.length?"otro vino":"vino"}</button></div>
+  <div class="sec-h"><h2>Fotos de la cata</h2><button class="btn sm primary" onclick="addFotos(${id})">+ Añadir fotos</button></div>
+  ${fotos.length?`<div class="gallery">${fotos.map(f=>`<button onclick="lightbox(${f.id})"><img loading="lazy" src="${esc(f.url)}" alt="Foto de la cata"></button>`).join("")}</div>`:`<div class="card empty">Todavía no hay fotos de esta cata.</div>`}`;
+}
+function wineCard(v){
+  const med = mediaVino(v.id);
+  const uvas = (v.uvas||[]).map(u=>`<span class="chip">${esc(u.uva)}${u.pct?` ${u.pct}%`:""}</span>`).join("");
+  const otras = Object.entries(v.otras_puntuaciones||{}).map(([k,x])=>`${esc(k)} ${esc(x)}`).join(" · ");
+  const fuentes = (v.fuentes||[]).map((u,i)=>{ let host=""; try{host=new URL(u).hostname.replace("www.","");}catch(e){} return `<a href="${esc(u)}" target="_blank" rel="noopener">${esc(host||"fuente "+(i+1))}</a>`; }).join(" · ");
+  const busy = S.busy.has(v.id) || v.estado_ficha==="procesando";
+  let estado = "";
+  if (busy) estado = `<div class="status"><span class="spin"></span>Buscando la ficha… puede tardar un minuto</div>`;
+  else if (v.estado_ficha==="error") estado = `<div class="status err">No se pudo completar: ${esc(v.error_ficha||"")}</div>`;
+  else if (v.error_ficha) estado = `<div class="status">${esc(v.error_ficha)}</div>`;
+  const pendiente = v.estado_ficha!=="completa";
+  return `<article class="card wine-card">
+    <div class="label-img ${v.foto_etiqueta_url?"":"noimg"}">
+      ${v.foto_etiqueta_url?`<img src="${esc(v.foto_etiqueta_url)}" alt="Etiqueta de ${esc(v.nombre)}" onclick="window.open('${esc(v.foto_etiqueta_url)}','_blank')">`:`<div class="ph"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="4"/><path d="M8 6l2-2h4l2 2"/></svg>Sin foto de la etiqueta</div>`}
+      <button class="btn sm change" onclick="fotoEtiqueta(${v.id})">${v.foto_etiqueta_url?"Cambiar foto":"Hacer foto"}</button>
+    </div>
+    <div class="pad">
+      <div class="row between"><span class="kicker">Vino ${v.posicion}</span>${med?`<span class="score" title="Media de ${med.n}">${n1(med.m)}</span>`:""}</div>
+      <h3 style="font-size:21px;margin:4px 0 2px">${esc(wineName(v))}</h3>
+      <div class="ink2 small">${esc(v.bodega||"")}${v.formato?` · ${esc(v.formato)}`:""}</div>
+      <div class="flex-wrap" style="margin:10px 0">${v.denominacion?`<span class="chip wine">${esc(v.denominacion)}</span>`:""}${uvas}${v.crianza?`<span class="chip">${esc(v.crianza)}</span>`:""}</div>
+      <div class="pts">
+        <div class="pt ${v.parker?"":"empty"}"><b>${v.parker??"—"}</b><span>Parker</span></div>
+        <div class="pt ${v.penin?"":"empty"}"><b>${v.penin??"—"}</b><span>Peñín</span></div>
+        <div class="pt ${v.precio_compra?"":"empty"}" style="cursor:pointer" onclick="editVino(${v.id})" title="Precio que pagasteis"><b>${v.precio_compra?eur(v.precio_compra):"—"}</b><span>Precio</span></div>
+        ${v.graduacion?`<div class="pt"><b>${esc(v.graduacion)}%</b><span>Alcohol</span></div>`:""}
+      </div>
+      ${otras?`<div class="muted small" style="margin-top:6px">${otras}</div>`:""}
+      ${v.descripcion?`<p style="margin:12px 0 6px">${esc(v.descripcion)}</p>`:""}
+      ${v.nota_cata?`<details><summary>Ver nota de cata</summary><p class="ink2" style="margin:6px 0 0">${esc(v.nota_cata)}</p></details>`:""}
+      ${fuentes?`<div class="muted small" style="margin-top:8px">Fuentes: ${fuentes}</div>`:""}
+      <div style="margin-top:12px;display:grid;gap:8px">${estado}
+        <div class="row" style="flex-wrap:wrap">
+          ${pendiente&&!busy?`<button class="btn sm primary" onclick="fichaIA(${v.id})">✦ Completar ficha con IA</button>`:""}
+          ${!pendiente&&!busy?`<button class="btn sm ghost" onclick="fichaIA(${v.id})">Volver a buscar</button>`:""}
+          <button class="btn sm ghost" onclick="editVino(${v.id})">Editar datos</button>
+        </div>
+      </div>
+      <div class="hr"></div>
+      <div class="row between"><h3 style="font-size:16px">Valoraciones</h3>${med?`<span class="muted small">Media ${n1(med.m)} · ${med.n}/4</span>`:""}</div>
+      ${S.personas.map(p=>rateRow(v.id,p)).join("")}
+    </div>
+  </article>`;
+}
+function rateRow(vinoId, p){
+  const r = S.vals.find(x=>x.vino_id===vinoId && x.persona_id===p.id);
+  const mine = p.id===meId;
+  if (mine){
+    const cur = r?.puntuacion!=null ? Number(r.puntuacion) : null;
+    return `<div class="rate-row">${avatar(p)}<div class="grow">
+      <div class="row between"><b>${esc(p.nombre)} <span class="muted small">(tú)</span></b>${cur!=null?`<span class="score">${n1(cur)}</span>`:""}</div>
+      <div class="stars" style="margin:8px 0">${[1,2,3,4,5,6,7,8,9,10].map(n=>`<button class="${cur!=null&&n<=cur?"on":""}" onclick="setNota(${vinoId},${n})" aria-label="${n} de 10">${n}</button>`).join("")}</div>
+      <textarea id="com-${vinoId}" placeholder="Tus comentarios sobre este vino…">${esc(r?.comentario||"")}</textarea>
+      <div class="row" style="margin-top:6px"><button class="btn sm" onclick="saveComent(${vinoId})">Guardar comentario</button>${cur!=null?`<button class="btn sm ghost" onclick="clearNota(${vinoId})">Quitar nota</button>`:""}</div>
+    </div></div>`;
+  }
+  return `<div class="rate-row">${avatar(p)}<div class="grow">
+    <div class="row between"><b>${esc(p.nombre)}</b>${r?.puntuacion!=null?`<span class="score">${n1(Number(r.puntuacion))}</span>`:`<span class="muted small">Sin nota</span>`}</div>
+    ${r?.comentario?`<p class="ink2 small" style="margin:4px 0 0;white-space:pre-wrap">${esc(r.comentario)}</p>`:""}
+  </div></div>`;
+}
+function needMe(){ if(!meId){ toast("Tu usuario no está vinculado a ninguna persona"); return false;} return true; }
+async function upsertVal(vinoId, patch){
+  const cur = S.vals.find(x=>x.vino_id===vinoId && x.persona_id===meId);
+  const row = { vino_id:vinoId, persona_id:meId, puntuacion: cur?.puntuacion ?? null, comentario: cur?.comentario ?? null, ...patch };
+  const { data, error } = await sb.from("valoraciones").upsert(row, { onConflict:"vino_id,persona_id" }).select().single();
+  if (error){ toast("No se pudo guardar: "+error.message); return; }
+  S.vals = S.vals.filter(x=>!(x.vino_id===vinoId && x.persona_id===meId)); S.vals.push(data);
+}
+async function setNota(vinoId,n){ if(!needMe())return; const com=$(`#com-${vinoId}`)?.value; await upsertVal(vinoId,{puntuacion:n, comentario: com??undefined}); render(); toast("Nota guardada"); }
+async function clearNota(vinoId){ await upsertVal(vinoId,{puntuacion:null}); render(); }
+async function saveComent(vinoId){ if(!needMe())return; await upsertVal(vinoId,{comentario:$(`#com-${vinoId}`).value.trim()||null}); render(); toast("Comentario guardado"); }
+
+async function fotoEtiqueta(vinoId){
+  const [file] = await pickFile(false); if(!file) return;
+  toast("Subiendo foto…");
+  try{
+    const url = await upload(file, "etiquetas");
+    await sb.from("vinos").update({ foto_etiqueta_url:url }).eq("id",vinoId);
+    await reloadVinos(); render();
+    const v = S.vinos.find(x=>x.id===vinoId);
+    if (v && v.estado_ficha!=="completa") fichaIA(vinoId);
+    else toast("Foto guardada");
+  }catch(e){ toast("Error al subir: "+(e.message||e)); }
+}
+async function addFotos(cataId){
+  const files = await pickFile(true); if(!files.length) return;
+  toast(`Subiendo ${files.length} foto${files.length>1?"s":""}…`);
+  for (const f of files){
+    try{ const url = await upload(f, `catas/${cataId}`);
+      const { data } = await sb.from("fotos_cata").insert({ cata_id:cataId, url, persona_id:meId }).select().single();
+      if (data) S.fotos.push(data);
+    }catch(e){ toast("Error al subir una foto"); }
+  }
+  render();
+}
+function lightbox(fotoId){
+  const f = S.fotos.find(x=>x.id===fotoId); if(!f) return;
+  const el = document.createElement("div"); el.className="lightbox";
+  el.innerHTML = `<div class="bar"><button class="btn sm" id="lbDel">Borrar</button><button class="btn sm" id="lbX">Cerrar ✕</button></div><img src="${esc(f.url)}" alt="">`;
+  document.body.appendChild(el);
+  el.querySelector("#lbX").onclick = ()=>el.remove();
+  el.querySelector("img").onclick = ()=>el.remove();
+  el.querySelector("#lbDel").onclick = async ()=>{
+    if(!confirm("¿Borrar esta foto?")) return;
+    await sb.from("fotos_cata").delete().eq("id",fotoId);
+    S.fotos = S.fotos.filter(x=>x.id!==fotoId); el.remove(); render();
+  };
+}
+
+// ---------- Hojas de edición ----------
+function sheet(html){
+  const m = document.createElement("div"); m.className="modal";
+  m.innerHTML = `<div class="sheet">${html}</div>`;
+  m.onclick = e => { if(e.target===m) m.remove(); };
+  document.body.appendChild(m); return m;
+}
+function personaOptions(sel){ return S.personas.map(p=>`<option value="${p.id}" ${p.id===sel?"selected":""}>${esc(p.nombre)}</option>`).join(""); }
+function editCata(id){
+  const c = S.catas.find(x=>x.id===id);
+  const m = sheet(`<h2 style="font-size:20px">Editar cata</h2>
+    <label class="f">Fecha</label><input type="date" id="ecF" value="${c.fecha}">
+    <label class="f">Anfitrión</label><select id="ecA">${personaOptions(c.anfitrion_id)}</select>
+    <label class="f" style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="ecE" ${c.especial?"checked":""}> Cata especial</label>
+    <label class="f">Notas</label><textarea id="ecN" placeholder="Opcional">${esc(c.notas||"")}</textarea>
+    <div class="row between" style="margin-top:16px"><button class="btn ghost" id="ecDel" style="color:var(--err)">Borrar cata</button>
+    <div class="row"><button class="btn" id="ecX">Cancelar</button><button class="btn primary" id="ecOk">Guardar</button></div></div>`);
+  m.querySelector("#ecX").onclick=()=>m.remove();
+  m.querySelector("#ecOk").onclick=async()=>{
+    const patch={ fecha:$("#ecF").value, anfitrion_id:Number($("#ecA").value), especial:$("#ecE").checked, notas:$("#ecN").value.trim()||null };
+    const {error}=await sb.from("catas").update(patch).eq("id",id);
+    if(error) return toast(error.message);
+    Object.assign(c,patch); m.remove(); render();
+  };
+  m.querySelector("#ecDel").onclick=async()=>{
+    if(!confirm("¿Borrar esta cata con sus vinos, valoraciones y fotos? No se puede deshacer.")) return;
+    await sb.from("catas").delete().eq("id",id);
+    m.remove(); await loadAll(); location.hash="#/";
+  };
+}
+function editVino(id){
+  const v = S.vinos.find(x=>x.id===id);
+  const m = sheet(`<h2 style="font-size:20px">Editar vino ${v.posicion}</h2>
+    <p class="muted small" style="margin:4px 0 0">Corrige nombre o añada y pulsa "Completar ficha con IA" para que busque de nuevo.</p>
+    <label class="f">Nombre</label><input type="text" id="evN" value="${esc(v.nombre)}">
+    <div class="row"><div class="grow"><label class="f">Añada</label><input type="number" id="evA" inputmode="numeric" value="${v.anada??""}" placeholder="Ej. 2019"></div>
+    <div class="grow"><label class="f">Formato</label><input type="text" id="evFo" value="${esc(v.formato||"")}" placeholder="Ej. Magnum"></div></div>
+    <label class="f">Denominación de origen</label><input type="text" id="evD" value="${esc(v.denominacion||"")}" placeholder="Ej. DOCa Rioja">
+    <label class="f">Bodega</label><input type="text" id="evB" value="${esc(v.bodega||"")}">
+    <div class="row"><div class="grow"><label class="f">Parker</label><input type="number" id="evP" value="${v.parker??""}"></div>
+    <div class="grow"><label class="f">Peñín</label><input type="number" id="evPe" value="${v.penin??""}"></div></div>
+    <div class="row"><div class="grow"><label class="f">Uva principal</label><input type="text" id="evU" value="${esc(v.uva_principal||"")}" placeholder="Ej. Tempranillo"></div>
+    <div class="grow"><label class="f">Precio de compra (€)</label><input type="number" id="evPr" inputmode="decimal" step="0.01" value="${v.precio_compra??""}" placeholder="Ej. 45"></div></div>
+    <div class="row between" style="margin-top:16px"><button class="btn ghost" id="evDel" style="color:var(--err)">Quitar vino</button>
+    <div class="row"><button class="btn" id="evX">Cancelar</button><button class="btn primary" id="evOk">Guardar</button></div></div>`);
+  m.querySelector("#evX").onclick=()=>m.remove();
+  const num = x => x.trim()===""?null:Number(x);
+  m.querySelector("#evOk").onclick=async()=>{
+    const patch={ nombre:$("#evN").value.trim()||v.nombre, anada:num($("#evA").value), formato:$("#evFo").value.trim()||null,
+      denominacion:$("#evD").value.trim()||null, bodega:$("#evB").value.trim()||null, parker:num($("#evP").value), penin:num($("#evPe").value),
+      uva_principal:$("#evU").value.trim()||null, precio_compra:num($("#evPr").value.replace(",", ".")) };
+    const {error}=await sb.from("vinos").update(patch).eq("id",id);
+    if(error) return toast(error.message);
+    Object.assign(v,patch); m.remove(); render();
+  };
+  m.querySelector("#evDel").onclick=async()=>{
+    if(!confirm("¿Quitar este vino de la cata con sus valoraciones?")) return;
+    await sb.from("vinos").delete().eq("id",id);
+    S.vinos=S.vinos.filter(x=>x.id!==id); S.vals=S.vals.filter(x=>x.vino_id!==id); m.remove(); render();
+  };
+}
+function addVino(cataId){
+  const pos = Math.max(0,...vinosDeCata(cataId).map(v=>v.posicion))+1;
+  const m = sheet(`<h2 style="font-size:20px">Añadir vino ${pos}</h2>
+    <p class="muted small" style="margin:4px 0 0">Escribe el nombre si lo sabes; después podrás hacer la foto de la etiqueta y la IA completará la ficha.</p>
+    <label class="f">Nombre del vino</label><input type="text" id="avN" placeholder="Ej. Pintia">
+    <label class="f">Añada</label><input type="number" id="avA" inputmode="numeric" placeholder="Opcional">
+    <div class="row" style="justify-content:flex-end;margin-top:16px"><button class="btn" id="avX">Cancelar</button><button class="btn primary" id="avOk">Añadir</button></div>`);
+  m.querySelector("#avX").onclick=()=>m.remove();
+  m.querySelector("#avOk").onclick=async()=>{
+    const nombre=$("#avN").value.trim()||"Pendiente de identificar", a=$("#avA").value;
+    const {data,error}=await sb.from("vinos").insert({cata_id:cataId,posicion:pos,nombre,anada:a?Number(a):null}).select().single();
+    if(error) return toast(error.message);
+    S.vinos.push(data); m.remove(); render();
+    if (nombre!=="Pendiente de identificar") fichaIA(data.id);
+  };
+}
+
+// ---------- Vista: nueva cata ----------
+let nuevaFiles = {};
+function viewNueva(){
+  const hoy = new Date(); const iso = `${hoy.getFullYear()}-${String(hoy.getMonth()+1).padStart(2,"0")}-${String(hoy.getDate()).padStart(2,"0")}`;
+  return `<h1 style="font-size:26px;margin-bottom:4px">Nueva cata</h1>
+  <p class="muted" style="margin:0 0 14px">Elige casa y fecha, haz la foto de cada etiqueta y la IA rellenará las fichas. Para apuntar la <b>próxima cata</b>, pon una fecha futura: los vinos puedes dejarlos vacíos y añadirlos ese día.</p>
+  <div class="card pad" style="max-width:620px">
+    <label class="f" style="margin-top:0">¿En casa de quién?</label><select id="nA">${personaOptions(meId)}</select>
+    <label class="f">Fecha</label><input type="date" id="nF" value="${iso}">
+    <label class="f" style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="nE"> Cata especial</label>
+    <div id="nVinos"></div>
+    <button class="btn sm" style="margin-top:10px" id="nMas">+ Otro vino</button>
+    <div class="hr"></div>
+    <button class="btn primary" style="width:100%" id="nOk">Crear cata</button>
+  </div>`;
+}
+function initNueva(){
+  nuevaFiles = {};
+  const box = $("#nVinos"); let n = 0;
+  const addRow = () => { n++; const i=n; const d=document.createElement("div"); d.className="wine-new";
+    d.innerHTML = `<div class="kicker">Vino ${i}</div>
+      <label class="f">Nombre (si lo sabes)</label><input type="text" id="nN${i}" placeholder="O déjalo vacío y haz solo la foto">
+      <div class="row" style="margin-top:8px"><button class="btn sm" id="nP${i}">📷 Foto de la etiqueta</button><span class="muted small" id="nPs${i}"></span></div>`;
+    box.appendChild(d);
+    d.querySelector(`#nP${i}`).onclick = async ()=>{ const [f]=await pickFile(false); if(f){ nuevaFiles[i]=f; $(`#nPs${i}`).textContent="✓ "+f.name.slice(0,24);} };
+  };
+  addRow(); addRow();
+  $("#nMas").onclick = addRow;
+  $("#nOk").onclick = async ()=>{
+    const btn=$("#nOk"); btn.disabled=true; btn.textContent="Creando…";
+    try{
+      const {data:c,error}=await sb.from("catas").insert({fecha:$("#nF").value, anfitrion_id:Number($("#nA").value), especial:$("#nE").checked}).select().single();
+      if(error) throw error;
+      const nuevos=[];
+      for(let i=1;i<=n;i++){
+        const nombre=$(`#nN${i}`).value.trim(), f=nuevaFiles[i];
+        if(!nombre && !f) continue;
+        let foto=null; if(f){ btn.textContent=`Subiendo foto ${i}…`; foto=await upload(f,"etiquetas"); }
+        const {data:v,error:e2}=await sb.from("vinos").insert({cata_id:c.id,posicion:nuevos.length+1,nombre:nombre||"Pendiente de identificar",foto_etiqueta_url:foto}).select().single();
+        if(e2) throw e2; nuevos.push(v);
+      }
+      await loadAll(); location.hash=`#/cata/${c.id}`;
+      nuevos.forEach(v=>fichaIA(v.id));
+    }catch(e){ toast("Error: "+(e.message||e)); btn.disabled=false; btn.textContent="Crear cata"; }
+  };
+}
+
+// ---------- Vista: estadísticas ----------
+function agg(key, useMedia){
+  const m = new Map();
+  for (const v of vinosBebidos()){
+    const k = v[key]; if(!k) continue;
+    if (useMedia){ const md = mediaVino(v.id); if(!md) continue; const e=m.get(k)||{s:0,n:0}; e.s+=md.m; e.n++; m.set(k,e); }
+    else m.set(k,(m.get(k)||0)+1);
+  }
+  return [...m.entries()].map(([k,x])=> useMedia?{k,val:x.s/x.n,n:x.n}:{k,val:x}).sort((a,b)=>b.val-a.val);
+}
+function bars(rows, {max, fmt, unit}){
+  if(!rows.length) return "";
+  const top = max ?? Math.max(...rows.map(r=>r.val));
+  return `<div class="bars" role="list">${rows.slice(0,10).map(r=>`<div class="bar-row" role="listitem" title="${esc(r.k)}: ${fmt(r.val)}${r.n?` (${r.n} vino${r.n>1?"s":""})`:""}">
+    <span class="nm">${esc(r.k)}</span><div class="bar-track"><div class="bar-fill" style="width:${Math.max(2,r.val/top*100)}%"></div></div><span class="val">${fmt(r.val)}</span></div>`).join("")}</div>
+    ${rows.length>10?`<p class="muted small" style="margin:8px 0 0">y ${rows.length-10} más</p>`:""}`;
+}
+function statCard(title, sub, rows, opts, emptyMsg){
+  return `<section class="card pad"><h3 style="font-size:17px">${title}</h3><p class="muted small" style="margin:2px 0 14px">${sub}</p>
+    ${rows.length?bars(rows,opts):`<div class="empty">${emptyMsg}</div>`}
+    ${rows.length?`<details style="margin-top:10px"><summary class="small">Ver como tabla</summary><table class="tv" style="margin-top:6px"><tr><th></th><th>${opts.unit}</th></tr>${rows.map(r=>`<tr><td>${esc(r.k)}</td><td>${opts.fmt(r.val)}${r.n?` · ${r.n}`:""}</td></tr>`).join("")}</table></details>`:""}
+  </section>`;
+}
+function viewStats(){
+  const cnt = x=>String(x);
+  const uvas = agg("uva_principal",false), dos = agg("denominacion",false);
+  const uvasB = agg("uva_principal",true), dosB = agg("denominacion",true);
+  const sinUva = vinosBebidos().filter(v=>!v.uva_principal).length;
+  const noVal = "Aparecerá cuando empecéis a puntuar los vinos.";
+  return `<h1 style="font-size:26px;margin-bottom:14px">Estadísticas</h1>
+  <div class="kpis">
+    <div class="card pad kpi"><b>${catasOrdenadas().length}</b><span>catas</span></div>
+    <div class="card pad kpi"><b>${vinosBebidos().length}</b><span>vinos</span></div>
+    <div class="card pad kpi"><b>${dos.length}</b><span>denominaciones</span></div>
+  </div>
+  <div class="stats-grid">
+    ${statCard("Uvas más usadas", `Cada vino cuenta solo para su uva mayoritaria${sinUva?` · ${sinUva} vinos sin uva identificada`:""}`, uvas, {fmt:cnt, unit:"Vinos"}, "Sin datos de uvas.")}
+    ${statCard("Denominaciones más usadas", "Número de vinos por DO", dos, {fmt:cnt, unit:"Vinos"}, "Sin datos.")}
+    ${statCard("Uvas mejor valoradas", "Media de vuestras notas (1–10) de los vinos de cada uva", uvasB, {max:10, fmt:n1, unit:"Media · vinos"}, noVal)}
+    ${statCard("Denominaciones mejor valoradas", "Media de vuestras notas (1–10) por DO", dosB, {max:10, fmt:n1, unit:"Media · vinos"}, noVal)}
+  </div>`;
+}
+
+// ---------- Login ----------
+const EYE = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>`;
+const EYE_OFF = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3l18 18M10.6 5.1A10.4 10.4 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-3.2 4.2M6.5 6.6C3.8 8.3 2 12 2 12s3.5 7 10 7c1.6 0 3-.4 4.2-1M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>`;
+function pwField(id, ac, ph){
+  return `<div class="pw-wrap"><input type="password" id="${id}" autocomplete="${ac}" placeholder="${ph}"><button type="button" class="pw-eye" aria-label="Mostrar contraseña" onclick="togglePw('${id}',this)">${EYE}</button></div>`;
+}
+function togglePw(id, btn){
+  const i = document.getElementById(id), show = i.type==="password";
+  i.type = show ? "text" : "password";
+  btn.innerHTML = show ? EYE_OFF : EYE; btn.setAttribute("aria-label", show ? "Ocultar contraseña" : "Mostrar contraseña");
+}
+function viewLogin(){
+  return `<div style="max-width:380px;margin:8vh auto 0">
+    <div style="text-align:center;margin-bottom:22px">
+      <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="var(--wine)" stroke-width="1.5"><path d="M8 3h8c0 6-1.5 9-4 9s-4-3-4-9zM12 12v7M8 21h8"/></svg>
+      <h1 style="font-size:28px;margin-top:8px">Vino entre dos tierras</h1>
+      <p class="muted" style="margin:4px 0 0">Las catas de Pedro Pablo, David, Emilio y Sergio</p>
+    </div>
+    <form class="card pad" id="loginF" autocomplete="on">
+      <label class="f" style="margin-top:0" for="lgU">Usuario</label>
+      <input type="text" id="lgU" name="username" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="Ej. sergio">
+      <label class="f" for="lgP">Contraseña</label>
+      ${pwField("lgP","current-password","")}
+      <p id="lgE" class="small" style="color:var(--err);min-height:1.4em;margin:8px 0 0"></p>
+      <button class="btn primary" style="width:100%;margin-top:6px" id="lgB" type="submit">Entrar</button>
+    </form></div>`;
+}
+function initLogin(){
+  $("#loginF").onsubmit = async e => {
+    e.preventDefault();
+    const u = $("#lgU").value.trim().toLowerCase().replace(/\s+/g,""), pw = $("#lgP").value;
+    if (!u || !pw){ $("#lgE").textContent = "Escribe usuario y contraseña"; return; }
+    $("#lgB").disabled = true; $("#lgB").textContent = "Entrando…"; $("#lgE").textContent = "";
+    const { error } = await sb.auth.signInWithPassword({ email: u + DOMINIO, password: pw });
+    if (error){ $("#lgE").textContent = "Usuario o contraseña incorrectos"; $("#lgB").disabled=false; $("#lgB").textContent="Entrar"; }
+  };
+}
+
+// ---------- Vista: perfil ----------
+function viewPerfil(){
+  const me = persona(meId);
+  return `<h1 style="font-size:26px;margin-bottom:14px">Perfil</h1>
+  <div class="card pad" style="max-width:520px">
+    <div class="row">${avatar(me,"lg")}<div class="grow"><b style="font-size:17px">${esc(me?.nombre)}</b><div class="muted small">Usuario: ${esc(me?.usuario||"")}</div></div>
+    <button class="btn sm" onclick="fotoPersona(${meId})">${me?.foto_url?"Cambiar foto":"Poner foto"}</button></div>
+    <div class="hr"></div>
+    <h3 style="font-size:16px">Cambiar contraseña</h3>
+    <label class="f">Nueva contraseña</label>${pwField("pw1","new-password","Mínimo 6 caracteres")}
+    <label class="f">Repite la contraseña</label>${pwField("pw2","new-password","")}
+    <button class="btn primary" style="margin-top:12px" onclick="cambiarPw()">Guardar contraseña</button>
+    <div class="hr"></div>
+    <button class="btn ghost" style="color:var(--err);padding-left:0" onclick="salir()">Cerrar sesión</button>
+  </div>
+  ${vinosEnCasa(meId, "Vinos en mi casa")}
+  <h3 style="font-size:16px;margin:22px 0 4px">El grupo</h3>
+  <p class="muted small" style="margin:0 0 10px">Toca a alguien para ver los vinos de su casa.</p>
+  <div class="people" style="max-width:520px">${S.personas.map(p=>`<div class="person ${p.id===meId?"on":""}" onclick="S.fCasa='${p.id}';S.fDO='';S.fUva='';location.hash='#/vinos'">${avatar(p,"lg")}<b>${esc(p.nombre)}</b><span class="muted small">${pl(vinosBebidos().filter(v=>S.catas.find(c=>c.id===v.cata_id)?.anfitrion_id===p.id).length,"vino","vinos")}</span></div>`).join("")}</div>`;
+}
+function vinosEnCasa(pid, titulo){
+  const cs = catasOrdenadas().filter(c=>c.anfitrion_id===pid);
+  const vs = cs.flatMap(c=>vinosDeCata(c.id).map(v=>({...v, fecha:c.fecha, med:mediaVino(v.id)})));
+  const conNota = vs.filter(v=>v.med);
+  const media = conNota.length ? conNota.reduce((a,v)=>a+v.med.m,0)/conNota.length : null;
+  return `<div class="sec-h" style="margin-top:22px;max-width:520px"><h2 style="font-size:18px">${titulo}</h2><span class="muted small">${pl(cs.length,"cata","catas")} · ${pl(vs.length,"vino","vinos")}${media!=null?` · media ${n1(media)}`:""}</span></div>
+  ${vs.length?`<div class="card" style="max-width:520px"><ul class="list">${vs.map(v=>`<li><a class="item" href="#/cata/${v.cata_id}">
+    <div class="grow"><div class="t1">${esc(wineName(v))}</div><div class="t2">${fmtShort(v.fecha)} · ${esc(v.denominacion||"Sin DO")}${v.precio_compra?` · ${eur(v.precio_compra)}`:""}</div></div>
+    ${v.med?`<span class="score">${n1(v.med.m)}</span>`:`<span class="score none">—</span>`}</a></li>`).join("")}</ul></div>`:`<div class="card empty" style="max-width:520px">Todavía no hay catas en tu casa.</div>`}`;
+}
+async function cambiarPw(){
+  const a=$("#pw1").value, b=$("#pw2").value;
+  if (a.length<6) return toast("La contraseña debe tener al menos 6 caracteres");
+  if (a!==b) return toast("Las contraseñas no coinciden");
+  const { error } = await sb.auth.updateUser({ password:a });
+  if (error) return toast("No se pudo cambiar: "+error.message);
+  $("#pw1").value=""; $("#pw2").value=""; toast("Contraseña cambiada");
+}
+async function salir(){ await sb.auth.signOut(); }
+async function fotoPersona(id){
+  if (id!==meId) return;
+  const [f]=await pickFile(false); if(!f) return;
+  try{ const url=await upload(f,"personas"); const {error}=await sb.from("personas").update({foto_url:url}).eq("id",id); if(error) throw error; persona(id).foto_url=url; render(); }
+  catch(e){ toast("Error al subir: "+(e.message||e)); }
+}
+
+// ---------- Arranque ----------
+async function arrancar(){
+  if (!session){ render(); return; }
+  try{
+    // Justo tras iniciar sesión Supabase puede rechazar el token unos segundos ("issued at future"): reintentar
+    for (let i=0;;i++){
+      try{ await loadAll(); break; }
+      catch(e){ if (i<5 && /future|JWT/i.test(e.message||"")){ $("#app").innerHTML=`<div class="empty">Conectando…</div>`; await new Promise(r=>setTimeout(r,2000)); } else throw e; }
+    }
+    meId = S.personas.find(p=>p.user_id===session.user.id)?.id ?? null;
+    render();
+  }catch(e){ $("#app").innerHTML = `<div class="card empty">No se pudo conectar con la base de datos.<br><span class="small">${esc(e.message||e)}</span><br><br><button class="btn" onclick="location.reload()">Reintentar</button></div>`; }
+}
+sb.auth.onAuthStateChange((event, s2)=>{
+  const antes = session?.user?.id; session = s2;
+  // setTimeout: no llamar a Supabase dentro del propio aviso de sesión
+  if (event==="INITIAL_SESSION") setTimeout(arrancar,0);
+  else if (event==="SIGNED_OUT"){ meId=null; S.personas=[];S.catas=[];S.vinos=[];S.vals=[];S.fotos=[]; location.hash="#/"; setTimeout(render,0); }
+  else if (s2 && s2.user.id!==antes) setTimeout(arrancar,0);
+});
+</script>
+</body>
+</html>
